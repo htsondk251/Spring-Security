@@ -1,52 +1,35 @@
 package com.example.ch3ex1.model;
 
-import java.util.Collection;
-import java.util.List;
+import java.io.Serializable;
+import java.util.UUID;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
-import lombok.AllArgsConstructor;
+import lombok.*;
 
-@AllArgsConstructor
-public class User implements UserDetails {
-    private final String username;
-    private final String password;
-    private final String authority;
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class User implements Serializable {
+    @Id 
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userIdSeq")
+    @SequenceGenerator(name = "userIdSeq", sequenceName = "userIdSeq", allocationSize = 1)
+    private Long id;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(() -> authority);
+    private UUID userUuid;
+    private String username;
+    private String password;
+    private String authority;
+
+    public User(String username, String password, String authority) {
+        this.username = username;
+        this.password = password;
+        this.authority = authority;
+        this.userUuid = UUID.randomUUID();
     }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-    
 }
